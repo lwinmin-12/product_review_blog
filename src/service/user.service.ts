@@ -4,15 +4,11 @@ import { compass, createToken } from "../utils/helper";
 import { permitDocument } from "../model/permit.model";
 
 export const registerUser = async (payload: UserInput) => {
-  try {
     let result = await userModel.create(payload);
     let userObj: Partial<UserDocument> = result.toObject();
     delete userObj.password;
     return userObj;
-  } catch (e :any) {
-    throw new Error(e);
-  }
-};
+ };
 
 export const loginUser = async ({
   email,
@@ -21,36 +17,30 @@ export const loginUser = async ({
   email: string;
   password: string;
 }) => {
-  try {
-    let user = await userModel
-      .findOne({ email })
-      .populate("roles permits")
-      .select("-__v");
+  let user = await userModel
+    .findOne({ email })
+    .populate("roles permits")
+    .select("-__v");
 
-    if (!user || !compass(password, user.password)) {
-      throw new Error("Creditial Error");
-    }
-
-    let userObj: any = user.toObject();
-    userObj["token"] = createToken(userObj);
-
-    delete userObj.password;
-    return userObj;
-  } catch (e :any) {
-    throw new Error(e);
+  if (!user || !compass(password, user.password)) {
+    const error : any = new Error("Creditial Error");
+    (error as any).status = 401;
+    throw error;
   }
+
+  let userObj: any = user.toObject();
+  userObj["token"] = createToken(userObj);
+
+  delete userObj.password;
+  return userObj;
 };
 
 export const getUser = async (query: FilterQuery<UserDocument>) => {
-  try {
     return await userModel
       .find(query)
       .lean()
       .populate({ path: "roles permits" })
       .select("-password -__v");
-  } catch (e :any) {
-    throw new Error(e);
-  }
 };
 
 // export const getCredentialUser = async (query: FilterQuery<UserDocument>) => {
@@ -73,7 +63,7 @@ export const updateUser = async (
   try {
     await userModel.updateMany(query, body).select("-password -__v");
     return await userModel.find(query).lean();
-  } catch (e :any) {
+  } catch (e: any) {
     throw new Error(e);
   }
 };
@@ -81,7 +71,7 @@ export const updateUser = async (
 export const deleteUser = async (query: FilterQuery<UserDocument>) => {
   try {
     return await userModel.deleteMany(query);
-  } catch (e :any) {
+  } catch (e: any) {
     throw new Error(e);
   }
 };
@@ -140,10 +130,10 @@ export const userRemovePermit = async (
 
 export const addNewUser = async (payload: UserDocument) => {
   // console.log(payload.name)
-//   let user = await userModel.findOne({ name: payload.name });
-//   if (user) {
-//     return "user already exist";
-//   }
+  //   let user = await userModel.findOne({ name: payload.name });
+  //   if (user) {
+  //     return "user already exist";
+  //   }
   try {
     return await new userModel(payload).save();
   } catch (e: any) {
