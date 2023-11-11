@@ -9,7 +9,7 @@ export const addBrand = async (payload: brandDocument) => {
   return await new brandModel(payload).save();
 };
 
-export const getAllBrand = async (query :FilterQuery<brandDocument>) => {
+export const getAllBrand = async (query: FilterQuery<brandDocument>) => {
   return await brandModel.find(query);
 };
 
@@ -22,7 +22,7 @@ export const dropBrand = async (id: brandDocument["_id"]) => {
 };
 export const updateBrand = async (
   id: brandDocument["_id"],
-  payload:  UpdateQuery<brandDocument>
+  payload: UpdateQuery<brandDocument>
 ) => {
   let brand = await brandModel.findById(id);
 

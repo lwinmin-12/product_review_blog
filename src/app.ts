@@ -11,6 +11,7 @@ import categoryRoute from "./router/category.routes";
 import productRoute from "./router/product.routes";
 import feedbackRoute from "./router/feedback.routes";
 import dbConnect from "./utils/connect";
+import { adminAddPermit, migrate, rp } from "./migrations/migrator";
 
 const app = express();
 app.use(fileUpload());
@@ -21,8 +22,7 @@ const server = require("http").createServer(app);
 const port = config.get<number>("port");
 const host = config.get<string>("host");
 
-dbConnect()
-
+dbConnect();
 
 app.get("/", (req: Request, res: Response, next: NextFunction) => {
   res.send("ok");
@@ -46,6 +46,14 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
     msg: err.message,
   });
 });
+
+const defaultData = async () => {
+  migrate();
+  rp();
+  adminAddPermit();
+};
+
+defaultData();
 
 server.listen(port, () =>
   console.log(`server is running in  http://${host}:${port}`)

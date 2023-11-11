@@ -6,7 +6,12 @@ export interface roleDocument extends mongoose.Document {
 }
 
 const roleSchema = new Schema({
-  name: { type: String, required: true, unique: true },
+  name: {
+    type: String,
+    required: true,
+    unique: true,
+    enum: ["admin", "manager", "user"],
+  },
   createdAt: { type: Date, default: Date.now() },
 });
 

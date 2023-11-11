@@ -4,11 +4,11 @@ import { compass, createToken } from "../utils/helper";
 import { permitDocument } from "../model/permit.model";
 
 export const registerUser = async (payload: UserInput) => {
-    let result = await userModel.create(payload);
-    let userObj: Partial<UserDocument> = result.toObject();
-    delete userObj.password;
-    return userObj;
- };
+  let result = await userModel.create(payload);
+  let userObj: Partial<UserDocument> = result.toObject();
+  delete userObj.password;
+  return userObj;
+};
 
 export const loginUser = async ({
   email,
@@ -23,7 +23,7 @@ export const loginUser = async ({
     .select("-__v");
 
   if (!user || !compass(password, user.password)) {
-    const error : any = new Error("Creditial Error");
+    const error: any = new Error("Creditial Error");
     (error as any).status = 401;
     throw error;
   }
@@ -36,11 +36,11 @@ export const loginUser = async ({
 };
 
 export const getUser = async (query: FilterQuery<UserDocument>) => {
-    return await userModel
-      .find(query)
-      .lean()
-      .populate({ path: "roles permits" })
-      .select("-password -__v");
+  return await userModel
+    .find(query)
+    .lean()
+    .populate({ path: "roles permits" })
+    .select("-password -__v");
 };
 
 // export const getCredentialUser = async (query: FilterQuery<UserDocument>) => {
@@ -60,83 +60,50 @@ export const updateUser = async (
   query: FilterQuery<UserDocument>,
   body: UpdateQuery<UserDocument>
 ) => {
-  try {
-    await userModel.updateMany(query, body).select("-password -__v");
-    return await userModel.find(query).lean();
-  } catch (e: any) {
-    throw new Error(e);
-  }
+  await userModel.updateMany(query, body).select("-password -__v");
+  return await userModel.find(query).lean();
 };
 
 export const deleteUser = async (query: FilterQuery<UserDocument>) => {
-  try {
-    return await userModel.deleteMany(query);
-  } catch (e: any) {
-    throw new Error(e);
-  }
+  return await userModel.deleteMany(query);
 };
 
 export const userAddRole = async (
   userId: UserDocument["_id"],
   roleId: UserDocument["_id"]
 ) => {
-  try {
-    await userModel.findByIdAndUpdate(userId, {
-      $push: { roles: roleId },
-    });
-    return await userModel.findById(userId).select("-password -__v");
-  } catch (e: any) {
-    throw new Error(e);
-  }
+  await userModel.findByIdAndUpdate(userId, {
+    $push: { roles: roleId },
+  });
+  return await userModel.findById(userId).select("-password -__v");
 };
 
 export const userRemoveRole = async (
   userId: UserDocument["_id"],
   roleId: UserDocument["_id"]
 ) => {
-  try {
-    await userModel.findByIdAndUpdate(userId, {
-      $pull: { roles: roleId },
-    });
-    return await userModel.findById(userId).select("-password -__v");
-  } catch (e: any) {
-    throw new Error(e);
-  }
+  await userModel.findByIdAndUpdate(userId, {
+    $pull: { roles: roleId },
+  });
+  return await userModel.findById(userId).select("-password -__v");
 };
 
 export const userAddPermit = async (
   userId: UserDocument["_id"],
   permitId: permitDocument["_id"]
 ) => {
-  try {
-    await userModel.findByIdAndUpdate(userId, { $push: { permits: permitId } });
-    return await userModel.findById(userId).select("-password -__v");
-  } catch (e: any) {
-    throw new Error(e);
-  }
+  await userModel.findByIdAndUpdate(userId, { $push: { permits: permitId } });
+  return await userModel.findById(userId).select("-password -__v");
 };
 
 export const userRemovePermit = async (
   userId: UserDocument["_id"],
   permitId: permitDocument["_id"]
 ) => {
-  try {
-    await userModel.findByIdAndUpdate(userId, { $pull: { permits: permitId } });
-    return await userModel.findById(userId).select("-password -__v");
-  } catch (e: any) {
-    throw new Error(e);
-  }
+  await userModel.findByIdAndUpdate(userId, { $pull: { permits: permitId } });
+  return await userModel.findById(userId).select("-password -__v");
 };
 
 export const addNewUser = async (payload: UserDocument) => {
-  // console.log(payload.name)
-  //   let user = await userModel.findOne({ name: payload.name });
-  //   if (user) {
-  //     return "user already exist";
-  //   }
-  try {
-    return await new userModel(payload).save();
-  } catch (e: any) {
-    return new Error(e);
-  }
+  return await new userModel(payload).save();
 };

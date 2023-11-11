@@ -80,3 +80,12 @@ export const feedbackSchema = object({
     }).regex(/^[0-9a-fA-F]{24}$/, "invlid id"),
   }),
 });
+
+
+export const commonSchema = Object({
+  body : object({
+    name: string({
+      required_error: "name is required",
+    }),
+  })
+})

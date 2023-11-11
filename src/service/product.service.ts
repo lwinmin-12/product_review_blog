@@ -46,7 +46,11 @@ export const productPaginate = async (pageNo: number) => {
   const limitNo = config.get<number>("page_limit");
   const reqPage = pageNo == 1 ? 0 : pageNo - 1;
   const skipCount = limitNo * reqPage;
-  return await productModel.find().skip(skipCount).limit(limitNo);
+  return await productModel
+    .find()
+    .skip(skipCount)
+    .limit(limitNo)
+    .populate("brand category tag");
 };
 
 export const productFilterBy = async (

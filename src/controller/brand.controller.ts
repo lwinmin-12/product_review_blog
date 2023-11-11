@@ -1,6 +1,12 @@
 import { Request, Response, NextFunction } from "express";
 import fMsg from "../utils/helper";
-import { addBrand, dropBrand, getAllBrand, getOneBrand, updateBrand } from "../service/brand.service";
+import {
+  addBrand,
+  dropBrand,
+  getAllBrand,
+  getOneBrand,
+  updateBrand,
+} from "../service/brand.service";
 
 export const addBrandHandler = async (
   req: Request,
@@ -9,9 +15,10 @@ export const addBrandHandler = async (
 ) => {
   try {
     let result = await addBrand(req.body);
+    console.log(result);
     fMsg(res, "Brand saved", result);
   } catch (e: any) {
-    return next(new Error(e.errors));
+    next(e);
   }
 };
 

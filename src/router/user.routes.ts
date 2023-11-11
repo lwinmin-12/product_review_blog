@@ -19,6 +19,7 @@ import {
 } from "../middleware/validator.middleware";
 
 import {
+  allSchemaId,
   createUserSchema,
   loginUserSchema,
   userPermitSchema,
@@ -35,8 +36,8 @@ userRoute.post("/login", validateAll(loginUserSchema), loginUserHandler);
 userRoute.patch(
   "/",
   validateToken,
-  roleValidator(["admin"]),
   hasAnyPermit(["edit"]),
+  validateAll(allSchemaId),
   updateUserHandler
 );
 
@@ -49,15 +50,6 @@ userRoute.delete(
   validateToken,
   roleValidator(["admin"]),
   hasAnyPermit(["delete"]),
-  deleteUserHandler
-);
-
-//admin routes
-//beware deleting all user route
-userRoute.delete(
-  "/admin",
-  validateToken,
-  roleValidator(["admin"]),
   deleteUserHandler
 );
 
@@ -75,7 +67,7 @@ userRoute.patch(
   "/remove/role",
   validateToken,
   validateAll(userRoleSchema),
-  roleValidator(["admin"]),
+  roleValidator(["admin" , 'manager']),
   hasAnyPermit(["delete"]),
   userRemoveRoleHandler
 );
@@ -85,7 +77,7 @@ userRoute.patch(
   "/add/permit",
   validateToken,
   validateAll(userPermitSchema),
-  roleValidator(["admin"]),
+  roleValidator(["admin" , "manager"]),
   hasAnyPermit(["add"]),
   userAddPermitHandler
 );
@@ -94,7 +86,7 @@ userRoute.patch(
   "/remove/permit",
   validateToken,
   validateAll(userPermitSchema),
-  roleValidator(["admin", "installer"]),
+  roleValidator(["admin" , "manager"]),
   hasAnyPermit(["delete"]),
   userRemovePermitHandler
 );

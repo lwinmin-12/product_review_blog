@@ -6,7 +6,12 @@ export interface permitDocument extends mongoose.Document {
 }
 
 const permitSchema = new Schema({
-  name: { type: String, required: true, unique: true },
+  name: {
+    type: String,
+    required: true,
+    unique: true,
+    enum: ["add", "edit", "delete", "view"],
+  },
   createdAt: { type: Date, default: Date.now() },
 });
 
