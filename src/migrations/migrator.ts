@@ -51,23 +51,27 @@ export const rp = async () => {
 };
 
 export const adminAddPermit = async () => {
-  let admRole = await getRole({ name: "admin" });
-  let permit = await getPermit({});
-  if (!admRole[0] || !permit) {
-    return;
-  }
+  try {
+    let admRole = await getRole({ name: "admin" });
+    let permit = await getPermit({});
+    if (!admRole[0] || !permit) {
+      return;
+    }
 
-  let user = await getUser({ email: "admin@gmail.com" });
+    let user = await getUser({ email: "admin@gmail.com" });
 
-  console.log(user[0].roles.length);
+    console.log(user[0].roles.length);
 
-  if (user[0].roles.length == 0) {
-    await userAddRole(user[0]._id, admRole[0]._id);
-  }
+    if (user[0].roles.length == 0) {
+      await userAddRole(user[0]._id, admRole[0]._id);
+    }
 
-  if (user[0].permits.length == 0) {
-    permit.forEach(async (ea) => {
-      await userAddPermit(user[0]._id, ea._id);
-    });
+    if (user[0].permits.length == 0) {
+      permit.forEach(async (ea) => {
+        await userAddPermit(user[0]._id, ea._id);
+      });
+    }
+  } catch (e) {
+    console.log(e);
   }
 };
